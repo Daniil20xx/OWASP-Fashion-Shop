@@ -36,6 +36,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Serve frontend SPA (static files) under /app/ without changing existing API routes.
+	// static/index.html, static/app.js, static/styles.css
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/app/", http.StripPrefix("/app/", fs))
+
 	http.HandleFunc("/", catalogHandler)
 	http.HandleFunc("/register", registerHandler)
 	http.HandleFunc("/login", loginHandler) // SQL Injection
