@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    container_name: vulnshop_db
+    environment:
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: shop
+      POSTGRES_DB: shopdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # pg_isready without -d will try to connect to a database named after the user ("shop").
+      # The initialized DB in this compose is `shopdb`, so check that database explicitly.
+      test: ["CMD-SHELL", "pg_isready -U shop -d shopdb"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 5s
+    networks:
+      - vulnnet
+
+  api:
+    build: .
+    container_name: vulnshop_api
+    environment:
+      DATABASE_URL: postgres://shop:shop@db:5432/shopdb?sslmode=disable
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - vulnnet
+
+volumes:
+  pgdata:
+
+networks:
+  vulnnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
