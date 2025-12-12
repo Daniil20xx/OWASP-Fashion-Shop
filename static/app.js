@@ -1,5 +1,6 @@
 const views = {
   catalog: document.getElementById('view-catalog'),
+  vuln: document.getElementById('view-vuln'),
   auth: document.getElementById('view-auth'),
   profile: document.getElementById('view-profile'),
   admin: document.getElementById('view-admin'),
@@ -40,6 +41,73 @@ async function loadCatalog() {
   } catch (e) {
     views.catalog.innerHTML = `<h1>Catalog</h1><p class="error">Failed to load catalog: ${e}</p>`;
   }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// --- SSRF & XSS Demo ---
+function renderVulnDemo() {
+  views.vuln.innerHTML = `
+    <h1>Attack Playground (Demo)</h1>
+    <div class="vuln-layout">
+      <div class="panel">
+        <h2>SSRF via /proxy</h2>
+        <p>Fetch any URL (including internal services) via the vulnerable proxy.</p>
+        <form id="form-ssrf">
+          <label>Target URL <input name="url" type="text" placeholder="https://httpbin.org/get" required /></label>
+          <button type="submit">Fetch via /proxy</button>
+          <div class="msg" data-role="msg"></div>
+        </form>
+      </div>
+      <div class="panel">
+        <h2>Reflected XSS via /preview</h2>
+        <p>Echoes user input without escaping (XSS).</p>
+        <form id="form-xss">
+          <label>Text to preview <input name="text" type="text" placeholder="<script>alert(1)</script>" required /></label>
+          <button type="submit">Preview via /preview</button>
+          <div class="msg" data-role="msg"></div>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const ssrfForm = document.getElementById('form-ssrf');
+  const xssForm = document.getElementById('form-xss');
+
+  ssrfForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = new FormData(ssrfForm);
+    const url = data.get('url');
+    const msgEl = ssrfForm.querySelector('[data-role="msg"]');
+    msgEl.textContent = 'Fetching...';
+    try {
+      const resp = await fetch('/proxy?' + new URLSearchParams({ url }));
+      const text = await resp.text();
+      msgEl.innerHTML = `<strong>Status ${resp.status}</strong><br><pre>${escapeHtml(text)}</pre>`;
+    } catch (err) {
+      msgEl.textContent = 'Error: ' + err;
+    }
+  });
+
+  xssForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = new FormData(xssForm);
+    const text = data.get('text');
+    const msgEl = xssForm.querySelector('[data-role="msg"]');
+    msgEl.textContent = 'Loading preview...';
+    try {
+      const resp = await fetch('/preview?' + new URLSearchParams({ text }));
+      const html = await resp.text();
+      // Intentionally render unsanitized HTML to demonstrate XSS
+      msgEl.innerHTML = `<strong>Status ${resp.status}</strong><br>${html}`;
+    } catch (err) {
+      msgEl.textContent = 'Error: ' + err;
+    }
+  });
 }
 
 // --- Auth (login/register) ---
@@ -128,7 +196,31 @@ async function loadProfile() {
         <p><strong>Email:</strong> ${data.email}</p>
         <p><strong>is_admin:</strong> ${data.is_admin}</p>
       </div>
+      <form id="form-avatar" class="panel">
+        <h2>Update Avatar URL (SSRF Demo)</h2>
+        <label>Avatar URL <input name="avatar_url" type="text" placeholder="http://localhost:8081/secret" /></label>
+        <button type="submit">Update Avatar</button>
+        <div class="msg" data-role="msg"></div>
+      </form>
     `;
+    const avatarForm = document.getElementById('form-avatar');
+    avatarForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = new FormData(avatarForm);
+      const url = data.get('avatar_url');
+      const msgEl = avatarForm.querySelector('[data-role="msg"]');
+      msgEl.textContent = 'Fetching avatar...';
+      try {
+        const resp = await fetch('/image?' + new URLSearchParams({ url }));
+        const blob = await resp.blob();
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(blob);
+        msgEl.innerHTML = '';
+        msgEl.appendChild(img);
+      } catch (err) {
+        msgEl.textContent = 'Error: ' + err;
+      }
+    });
   } catch (e) {
     views.profile.innerHTML = `<h1>Profile</h1><p class="error">Error: ${e}</p>`;
   }
@@ -195,6 +287,9 @@ document.querySelectorAll('nav button[data-view]').forEach(btn => {
     if (v === 'auth' && !views.auth.hasChildNodes()) {
       renderAuth();
     }
+    if (v === 'vuln' && !views.vuln.hasChildNodes()) {
+      renderVulnDemo();
+    }
     showView(v);
   });
 });
@@ -202,5 +297,6 @@ document.querySelectorAll('nav button[data-view]').forEach(btn => {
 window.addEventListener('load', () => {
   const initial = window.location.hash.replace('#', '') || 'catalog';
   if (initial === 'auth') renderAuth();
+  if (initial === 'vuln') renderVulnDemo();
   showView(initial);
 });
