@@ -1,0 +1,34 @@
+## IDEs
+.idea/
+*.iml
+
+## Editor directories and files
+.vscode/
+
+## Go build/artifacts
+bin/
+*.exe
+*.test
+*.out
+
+## Dependency directories
+vendor/
+
+## Environment
+.env
+.env.local
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Docker / test data
+pgdata/
+docker-compose.override.yml
+
+## Logs
+*.log
+
+## Misc
+node_modules/
+coverage.out

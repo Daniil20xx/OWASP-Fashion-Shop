@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OWASP Fashion Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/app/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">OWASP Fashion Shop</div>
+    <nav class="nav">
+      <button data-view="catalog">Catalog</button>
+      <button data-view="vuln">Attack Playground</button>
+      <button data-view="auth">Login / Register</button>
+      <button data-view="profile">Profile</button>
+      <button data-view="admin">Admin</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="view-catalog" class="view active"></section>
+    <section id="view-vuln" class="view"></section>
+    <section id="view-auth" class="view"></section>
+    <section id="view-profile" class="view"></section>
+    <section id="view-admin" class="view"></section>
+  </main>
+
+  <footer class="footer">
+    <span>Intentionally vulnerable backend, frontend is for demo only (see README_backend.md)</span>
+  </footer>
+
+  <script src="/app/app.js"></script>
+</body>
+</html>
