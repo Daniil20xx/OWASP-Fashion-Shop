@@ -50,6 +50,7 @@ func main() {
 	http.HandleFunc("/preview", previewHandler) // Reflected XSS
 	http.HandleFunc("/admin/add_product", adminAddProductHandler)
 	http.HandleFunc("/image", imageFetchHandler)
+	http.HandleFunc("/local-image", localImageHandler)
 
 	log.Println("Vulnerable Shop API running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -106,8 +107,11 @@ CREATE TABLE IF NOT EXISTS orders (
 	if cnt == 0 {
 		_, err = db.Exec(`
 			INSERT INTO products (name, description, price_cents, image_url) VALUES
-			('T-Shirt', 'Simple cotton t-shirt', 1999, 'http://example.com/tshirt.png'),
-			('Jeans', 'Blue jeans', 4999, 'http://example.com/jeans.png')
+			('Faded Jeans', 'Classic Faded Jeans for everyday wear', 6300, 'http://localhost:8080/local-image?id=1'),
+			('Black Jeans', 'Classic Black Jeans for everyday wear', 7200, 'http://localhost:8080/local-image?id=2'),
+			('CHOCOOLATE Shoulder Tee', 'Shoulder Tee (NOT WHITE)', 5999, 'http://localhost:8080/local-image?id=3'),
+			('CHOCOOLATE_T-shirt', 'T-shirt (Chocoolate) with title', 3690, 'http://localhost:8080/local-image?id=4'),
+			('Casual Solid Drop Shoulder Tee', 'White and 100% Cotton', 5500, 'http://localhost:8080/local-image?id=5')
 		`)
 		if err != nil {
 			return err
@@ -358,4 +362,32 @@ func imageFetchHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", resp.Header.Get("Content-Type"))
 	io.Copy(w, resp.Body)
+}
+
+// Local Images
+func localImageHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		http.Error(w, "missing id parameter", 400)
+		return
+	}
+
+	for _, c := range id {
+		if c < '0' || c > '9' {
+			http.Error(w, "invalid id", 400)
+			return
+		}
+	}
+
+	filePath := fmt.Sprintf("static/images/%s.jpg", id)
+
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		filePath = fmt.Sprintf("static/images/%s.png", id)
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			http.Error(w, "image not found", 404)
+			return
+		}
+	}
+
+	http.ServeFile(w, r, filePath)
 }
