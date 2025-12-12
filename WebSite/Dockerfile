@@ -11,5 +11,6 @@ FROM debian:bookworm-slim
 WORKDIR /app
 COPY --from=builder /app/vulnshop .
 COPY --from=builder /app/static ./static
+COPY --from=builder /app/static/images ./static/images
 EXPOSE 8080
 CMD ["./vulnshop"]
