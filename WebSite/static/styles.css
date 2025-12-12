@@ -85,6 +85,175 @@ h1 {
   color: #fbbf24;
 }
 
+.add-to-cart-btn {
+  width: 100%;
+  margin-top: .75rem;
+  padding: .5rem;
+  border-radius: .5rem;
+  border: none;
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-to-cart-btn:hover {
+  background: #059669;
+}
+
+/* Cart Styles */
+.cart-items {
+  margin: 1rem 0;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #020617;
+  border: 1px solid #1f2937;
+  border-radius: .75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cart-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: .5rem;
+}
+
+.cart-item-info {
+  flex: 1;
+}
+
+.cart-item-info h3 {
+  margin: 0 0 .25rem;
+  font-size: 1rem;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.quantity-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #1f2937;
+  background: #020617;
+  color: #e5e7eb;
+  border-radius: .25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-btn:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.remove-btn {
+  padding: .5rem 1rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+.cart-summary {
+  background: #020617;
+  border: 1px solid #1f2937;
+  border-radius: .75rem;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  text-align: right;
+}
+
+.total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fbbf24;
+  margin-bottom: 1rem;
+}
+
+.checkout-btn {
+  padding: .75rem 2rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: .5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout-btn:hover {
+  background: #059669;
+}
+
+/* Profile Styles */
+.profile-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.order-history {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.order-item {
+  background: #020617;
+  border: 1px solid #1f2937;
+  border-radius: .5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.order-item h4 {
+  margin: 0 0 .5rem;
+  color: #38bdf8;
+}
+
+.order-items {
+  margin-top: .75rem;
+}
+
+.order-product {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid #1f2937;
+}
+
+.order-product:last-child {
+  border-bottom: none;
+}
+
+.order-product img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: .25rem;
+}
+
+.order-product p {
+  margin: 0;
+  font-size: .85rem;
+}
+
 .auth-layout {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
