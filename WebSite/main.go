@@ -350,7 +350,7 @@ func adminAddProductHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	desc := r.FormValue("description")
 	price := r.FormValue("price_cents")
-	img := r.FormValue("image_url") // ⚠ пользователю можно указать любой URL (SSRF vector)
+	img := r.FormValue("image_url")
 
 	_, err = db.Exec(
 		"INSERT INTO products (name, description, price_cents, image_url) VALUES ($1, $2, $3, $4)",

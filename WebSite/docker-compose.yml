@@ -29,7 +29,7 @@ services:
     environment:
       DATABASE_URL: postgres://shop:shop@db:5432/shopdb?sslmode=disable
     ports:
-      - "8080:8080"
+      - "0.0.0.0:8080:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -42,6 +42,3 @@ volumes:
 networks:
   vulnnet:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.25.0.0/16
