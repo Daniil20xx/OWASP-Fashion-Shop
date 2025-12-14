@@ -18,6 +18,7 @@ OWASP-Fashion-Shop/
 |---|---|---images - images.png [1-5]
 |--- Exploit
 |---|--- SSRF.py
+|---|--- SQL Injection Payload.txt
 |---|--- XSS/
 |---|---|--- payload.txt
 |---|---|--- evil.py
