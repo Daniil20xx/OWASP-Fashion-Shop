@@ -27,19 +27,20 @@ OWASP-Fashion-Shop/
 
 ### How to start:
 
-Server (Site script):
+#### Server (Site script):
 ``` bash
 cd WebSite
 docker compose up -d
 ```
+Server available on `localhost:8080`
 
-XSS attack:
+#### XSS attack:
 ``` bash
 cd Exploit/XSS/
 python evil.py
 ```
 
-SSRF attack
+#### SSRF attack
 ``` bash
 cd Exploit/
 python SSRF.py
